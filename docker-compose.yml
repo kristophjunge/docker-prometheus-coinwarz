@@ -1,0 +1,13 @@
+version: '2'
+
+services:
+  prometheus_coinwarz:
+    container_name: prometheus_coinwarz
+    build: .
+    environment:
+      TEST_MODE: "${TEST_MODE}"
+      API_KEY: "${API_KEY}"
+    ports:
+      - "9206:9206"
+    volumes:
+      - "/etc/ssl/certs:/etc/ssl/certs" # Needed for HTTPS calls
