@@ -16,6 +16,39 @@ const API_URL = "http://www.coinwarz.com/v1/api/profitability/"
 
 var apiKey string
 var testMode string
+var sha256HashRate string
+var sha256Power string
+var sha256PowerCost string
+var scryptHashRate string
+var scryptPower string
+var scryptPowerCost string
+var x11HashRate string
+var x11Power string
+var x11PowerCost string
+var quarkHashRate string
+var quarkPower string
+var quarkPowerCost string
+var groestlHashRate string
+var groestlPower string
+var groestlPowerCost string
+var blake256HashRate string
+var blake256Power string
+var blake256PowerCost string
+var neoscryptHashRate string
+var neoscryptPower string
+var neoscryptPowerCost string
+var lyra2rev2HashRate string
+var lyra2rev2Power string
+var lyra2rev2PowerCost string
+var cryptonightHashRate string
+var cryptonightPower string
+var cryptonightPowerCost string
+var ethashHashRate string
+var ethashPower string
+var ethashPowerCost string
+var equihashHashRate string
+var equihashPower string
+var equihashPowerCost string
 
 type CoinWarzMiningProfitability struct {
     Success bool `json:"success"`
@@ -41,7 +74,7 @@ type CoinWarzMiningProfitability struct {
 }
 
 func integerToString(value int64) string {
-    return strconv.FormatInt(value, 16)
+    return strconv.FormatInt(value, 10)
 }
 
 func floatToString(value float64, precision int64) string {
@@ -93,6 +126,105 @@ func queryData() (string, error) {
 
     // Build URL
     url := API_URL + "?apikey=" + apiKey + "&algo=all"
+    if sha256HashRate != "" {
+        url += "&sha256HashRate=" + sha256HashRate
+    }
+    if sha256Power != "" {
+        url += "&sha256Power=" + sha256Power
+    }
+    if sha256PowerCost != "" {
+        url += "&sha256PowerCost=" + sha256PowerCost
+    }
+    if scryptHashRate != "" {
+        url += "&scryptHashRate=" + scryptHashRate
+    }
+    if scryptPower != "" {
+        url += "&scryptPower=" + scryptPower
+    }
+    if scryptPowerCost != "" {
+        url += "&scryptPowerCost=" + scryptPowerCost
+    }
+    if x11HashRate != "" {
+        url += "&x11HashRate=" + x11HashRate
+    }
+    if x11Power != "" {
+        url += "&x11Power=" + x11Power
+    }
+    if x11PowerCost != "" {
+        url += "&x11PowerCost=" + x11PowerCost
+    }
+    if quarkHashRate != "" {
+        url += "&quarkHashRate=" + quarkHashRate
+    }
+    if quarkPower != "" {
+        url += "&quarkPower=" + quarkPower
+    }
+    if quarkPowerCost != "" {
+        url += "&quarkPowerCost=" + quarkPowerCost
+    }
+    if groestlHashRate != "" {
+        url += "&groestlHashRate=" + groestlHashRate
+    }
+    if groestlPower != "" {
+        url += "&groestlPower=" + groestlPower
+    }
+    if groestlPowerCost != "" {
+        url += "&groestlPowerCost=" + groestlPowerCost
+    }
+    if blake256HashRate != "" {
+        url += "&blake256HashRate=" + blake256HashRate
+    }
+    if blake256Power != "" {
+        url += "&blake256Power=" + blake256Power
+    }
+    if blake256PowerCost != "" {
+        url += "&blake256PowerCost=" + blake256PowerCost
+    }
+    if neoscryptHashRate != "" {
+        url += "&neoscryptHashRate=" + neoscryptHashRate
+    }
+    if neoscryptPower != "" {
+        url += "&neoscryptPower=" + neoscryptPower
+    }
+    if neoscryptPowerCost != "" {
+        url += "&neoscryptPowerCost=" + neoscryptPowerCost
+    }
+    if lyra2rev2HashRate != "" {
+        url += "&lyra2rev2HashRate=" + lyra2rev2HashRate
+    }
+    if lyra2rev2Power != "" {
+        url += "&lyra2rev2Power=" + lyra2rev2Power
+    }
+    if lyra2rev2PowerCost != "" {
+        url += "&lyra2rev2PowerCost=" + lyra2rev2PowerCost
+    }
+    if cryptonightHashRate != "" {
+        url += "&cryptonightHashRate=" + cryptonightHashRate
+    }
+    if cryptonightPower != "" {
+        url += "&cryptonightPower=" + cryptonightPower
+    }
+    if cryptonightPowerCost != "" {
+        url += "&cryptonightPowerCost=" + cryptonightPowerCost
+    }
+    if ethashHashRate != "" {
+        url += "&ethashHashRate=" + ethashHashRate
+    }
+    if ethashPower != "" {
+        url += "&ethashPower=" + ethashPower
+    }
+    if ethashPowerCost != "" {
+        url += "&ethashPowerCost=" + ethashPowerCost
+    }
+    if equihashHashRate != "" {
+        url += "&equihashHashRate=" + equihashHashRate
+    }
+    if equihashPower != "" {
+        url += "&equihashPower=" + equihashPower
+    }
+    if equihashPowerCost != "" {
+        url += "&equihashPowerCost=" + equihashPowerCost
+    }
 
     // Perform HTTP request
     resp, err := http.Get(url);
@@ -148,47 +280,27 @@ func metrics(w http.ResponseWriter, r *http.Request) {
     json.Unmarshal([]byte(jsonString), &jsonData)
 
     // Output
+    if !jsonData.Success {
+        up = 0
+    }
     io.WriteString(w, formatValue("coinwarz_up", "", integerToString(up)))
 
-    log.Print(jsonData)
-
     for _, Coin := range jsonData.Data {
+        up = 1
+        if Coin.HealthStatus != "Healthy" {
+            log.Print("Status of '" + Coin.CoinName + "' is '" + Coin.HealthStatus + "': " + Coin.Message);
+            up = 0
+        }
 
-        //Coin.CoinName
-        //Coin.CoinTag
-        //Coin.Algorithm
-        floatToString(Coin.Difficulty, 8)
-        //integerToString(Coin.BlockReward)
-        //integerToString(Coin.BlockCount)
-        floatToString(Coin.ProfitRatio, 15)
-        floatToString(Coin.AvgProfitRatio, 15)
-        //Coin.Exchange
-        //floatToString(Coin.ExchangeRate, 8)
-        //floatToString(Coin.ExchangeVolume, 8)
-        //booleanToString(Coin.IsBlockExplorerOnline)
-        //booleanToString(Coin.IsExchangeOnline)
-        //Coin.Message
-        //integerToString(Coin.BlockTimeInSeconds)
-        //Coin.HealthStatus
-
-        io.WriteString(w, formatValue("coinwarz_", "name=\"" + Coin.CoinName + "\",symbol=\"" + Coin.CoinTag + "\"", ))
-        io.WriteString(w, formatValue("coinwarz_", "name=\"" + Coin.CoinName + "\",symbol=\"" + Coin.CoinTag + "\"", ))
-        io.WriteString(w, formatValue("coinwarz_", "name=\"" + Coin.CoinName + "\",symbol=\"" + Coin.CoinTag + "\"", ))
-        io.WriteString(w, formatValue("coinwarz_", "name=\"" + Coin.CoinName + "\",symbol=\"" + Coin.CoinTag + "\"", ))
-        io.WriteString(w, formatValue("coinwarz_", "name=\"" + Coin.CoinName + "\",symbol=\"" + Coin.CoinTag + "\"", ))
-        io.WriteString(w, formatValue("coinwarz_", "name=\"" + Coin.CoinName + "\",symbol=\"" + Coin.CoinTag + "\"", ))
-        io.WriteString(w, formatValue("coinwarz_", "name=\"" + Coin.CoinName + "\",symbol=\"" + Coin.CoinTag + "\"", ))
-        io.WriteString(w, formatValue("coinwarz_", "name=\"" + Coin.CoinName + "\",symbol=\"" + Coin.CoinTag + "\"", ))
-        io.WriteString(w, formatValue("coinwarz_", "name=\"" + Coin.CoinName + "\",symbol=\"" + Coin.CoinTag + "\"", ))
-        io.WriteString(w, formatValue("coinwarz_", "name=\"" + Coin.CoinName + "\",symbol=\"" + Coin.CoinTag + "\"", ))
-        io.WriteString(w, formatValue("coinwarz_", "name=\"" + Coin.CoinName + "\",symbol=\"" + Coin.CoinTag + "\"", ))
-        io.WriteString(w, formatValue("coinwarz_", "name=\"" + Coin.CoinName + "\",symbol=\"" + Coin.CoinTag + "\"", ))
-        io.WriteString(w, formatValue("coinwarz_", "name=\"" + Coin.CoinName + "\",symbol=\"" + Coin.CoinTag + "\"", ))
-        io.WriteString(w, formatValue("coinwarz_", "name=\"" + Coin.CoinName + "\",symbol=\"" + Coin.CoinTag + "\"", ))
-        io.WriteString(w, formatValue("coinwarz_", "name=\"" + Coin.CoinName + "\",symbol=\"" + Coin.CoinTag + "\"", ))
-        io.WriteString(w, formatValue("coinwarz_", "name=\"" + Coin.CoinName + "\",symbol=\"" + Coin.CoinTag + "\"", ))
-        io.WriteString(w, formatValue("coinwarz_", "name=\"" + Coin.CoinName + "\",symbol=\"" + Coin.CoinTag + "\"", ))
-
+        io.WriteString(w, formatValue("coinwarz_coin_up", "name=\"" + Coin.CoinName + "\",symbol=\"" + Coin.CoinTag + "\"", integerToString(up)))
+        io.WriteString(w, formatValue("coinwarz_difficulty", "name=\"" + Coin.CoinName + "\",symbol=\"" + Coin.CoinTag + "\"", floatToString(Coin.Difficulty, 8)))
+        io.WriteString(w, formatValue("coinwarz_block_reward", "name=\"" + Coin.CoinName + "\",symbol=\"" + Coin.CoinTag + "\"", integerToString(Coin.BlockReward)))
+        io.WriteString(w, formatValue("coinwarz_block_count", "name=\"" + Coin.CoinName + "\",symbol=\"" + Coin.CoinTag + "\"", integerToString(Coin.BlockCount)))
+        io.WriteString(w, formatValue("coinwarz_profit_ratio", "name=\"" + Coin.CoinName + "\",symbol=\"" + Coin.CoinTag + "\"", floatToString(Coin.ProfitRatio, 15)))
+        io.WriteString(w, formatValue("coinwarz_avg_profit_ratio", "name=\"" + Coin.CoinName + "\",symbol=\"" + Coin.CoinTag + "\"", floatToString(Coin.AvgProfitRatio, 15)))
+        io.WriteString(w, formatValue("coinwarz_block_time_in_seconds", "name=\"" + Coin.CoinName + "\",symbol=\"" + Coin.CoinTag + "\"", integerToString(Coin.BlockTimeInSeconds)))
+        io.WriteString(w, formatValue("coinwarz_exchange_rate", "name=\"" + Coin.CoinName + "\",symbol=\"" + Coin.CoinTag + "\"", floatToString(Coin.ExchangeRate, 8)))
+        io.WriteString(w, formatValue("coinwarz_exchange_volume", "name=\"" + Coin.CoinName + "\",symbol=\"" + Coin.CoinTag + "\"", floatToString(Coin.ExchangeVolume, 8)))
     }
 }
 
@@ -215,6 +327,39 @@ func main() {
     }
 
     apiKey = os.Getenv("API_KEY")
+    sha256HashRate = os.Getenv("HA256_HASHRATE")
+    sha256Power = os.Getenv("SHA256_POWER")
+    sha256PowerCost = os.Getenv("SHA256_POWERCOST")
+    scryptHashRate = os.Getenv("SCRYPT_HASHRATE")
+    scryptPower = os.Getenv("SCRYPT_POWER")
+    scryptPowerCost = os.Getenv("SCRYPT_POWERCOST")
+    x11HashRate = os.Getenv("X11_HASHRATE")
+    x11Power = os.Getenv("X11_POWER")
+    x11PowerCost = os.Getenv("X11_POWERCOST")
+    quarkHashRate = os.Getenv("QUARK_HASHRATE")
+    quarkPower = os.Getenv("QUARK_POWER")
+    quarkPowerCost = os.Getenv("QUARK_POWERCOST")
+    groestlHashRate = os.Getenv("GROESTL_HASHRATE")
+    groestlPower = os.Getenv("GROESTL_POWER")
+    groestlPowerCost = os.Getenv("GROESTL_POWERCOST")
+    blake256HashRate = os.Getenv("BLAKE256_HASHRATE")
+    blake256Power = os.Getenv("BLAKE256_POWER")
+    blake256PowerCost = os.Getenv("BLAKE256_POWERCOST")
+    neoscryptHashRate = os.Getenv("NEOSCRYPT_HASHRATE")
+    neoscryptPower = os.Getenv("NEOSCRYPT_POWER")
+    neoscryptPowerCost = os.Getenv("NEOSCRYPT_POWERCOST")
+    lyra2rev2HashRate = os.Getenv("LYRA2REV2_HASHRATE")
+    lyra2rev2Power = os.Getenv("LYRA2REV2_POWER")
+    lyra2rev2PowerCost = os.Getenv("LYRA2REV2_POWERCOST")
+    cryptonightHashRate = os.Getenv("CRYPTONIGHT_HASHRATE")
+    cryptonightPower = os.Getenv("CRYPTONIGHT_POWER")
+    cryptonightPowerCost = os.Getenv("CRYPTONIGHT_POWERCOST")
+    ethashHashRate = os.Getenv("ETHASH_HASHRATE")
+    ethashPower = os.Getenv("ETHASH_POWER")
+    ethashPowerCost = os.Getenv("ETHASH_POWERCOST")
+    equihashHashRate = os.Getenv("EQUIHASH_HASHRATE")
+    equihashPower = os.Getenv("EQUIHASH_POWER")
+    equihashPowerCost = os.Getenv("EQUIHASH_POWERCOST")
 
     log.Print("CoinWarz exporter listening on " + LISTEN_ADDRESS)
     http.HandleFunc("/", index)

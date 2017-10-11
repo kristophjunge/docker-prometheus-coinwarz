@@ -7,6 +7,12 @@ services:
     environment:
       TEST_MODE: "${TEST_MODE}"
       API_KEY: "${API_KEY}"
+      ETHASH_HASHRATE: "${ETHASH_HASHRATE}"
+      ETHASH_POWER: "${ETHASH_POWER}"
+      ETHASH_POWERCOST: "${ETHASH_POWERCOST}"
+      EQUIHASH_HASHRATE: "${EQUIHASH_HASHRATE}"
+      EQUIHASH_POWER: "${EQUIHASH_POWER}"
+      EQUIHASH_POWERCOST: "${EQUIHASH_POWERCOST}"
     ports:
       - "9206:9206"
     volumes:
